@@ -1,5 +1,4 @@
 Prool comments see in file readme.prool.
-10 Aug 2025 - bug found!
 
 ----
 
