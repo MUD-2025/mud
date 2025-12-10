@@ -13,8 +13,6 @@
 
 #define INTERPRETER_CPP_
 
-#define TEST_BUILD // prool: no send code by e-mail, and 1st player is immortal
-
 #include "interpreter.h"
 
 #include "engine/core/char_movement.h"
@@ -2786,7 +2784,7 @@ void nanny(DescriptorData *d, char *argument) {
 				switch (NewNames::auto_authorize(d)) {
 					case NewNames::AUTO_ALLOW:
 						sprintf(buffer,
-								"Введите пароль для %s : ",
+								"Введите пароль для %s (не вводите пароли типа '123' или 'qwe', иначе ваших персонажев могут украсть) : ",
 								GET_PAD(d->character, 1));
 						iosystem::write_to_output(buffer, d);
 						d->state = EConState::kNewpasswd;
@@ -2884,7 +2882,7 @@ void nanny(DescriptorData *d, char *argument) {
 			switch (NewNames::auto_authorize(d)) {
 				case NewNames::AUTO_ALLOW:
 					sprintf(buffer,
-							"Введите пароль для %s : ",
+							"Введите пароль для %s (не вводите пароли типа '123' или 'qwe', иначе ваших персонажев могут украсть) : ",
 							GET_PAD(d->character, 1));
 					iosystem::write_to_output(buffer, d);
 					d->state = EConState::kNewpasswd;
@@ -3538,7 +3536,7 @@ void nanny(DescriptorData *d, char *argument) {
 				) {
 				d->character->player_data.PNames[ECase::kPre] = std::string(utils::CAP(tmp_name));
 				sprintf(buffer,
-						"Введите пароль для %s : ",
+						"Введите пароль для %s (не вводите пароли типа '123' или 'qwe', иначе ваших персонажев могут украсть) : ",
 						GET_PAD(d->character, 1));
 				iosystem::write_to_output(buffer, d);
 				d->state = EConState::kNewpasswd;
@@ -3789,11 +3787,9 @@ DescriptorData *DescriptorByUid(long uid) {
 * \return >0 - уид чара, 0 - не нашли, -1 - нашли, но это оказался бог (только при god = true)
 */
 
-/* Вот в этой функции глюк, она была переписана с классами и не работает. Предыдущий ее вариант со сравнением
-строк (например в zerkalo-foolish-repo) работает норм. prool. 19 aug 2025 */
-int GetUniqueByName(std::string_view name, bool god) {
+int GetUniqueByName(std::string name, bool god) {
 	for (auto &i : player_table) {
-		if (!name.compare(i.name()) && i.uid() != -1) {
+		if (i.uid() != -1 && CompareParam(name, i.name(), true)) {
 			if (!god) {
 				return i.uid();
 			} else {
