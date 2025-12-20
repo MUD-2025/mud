@@ -6,9 +6,14 @@
 #include <chrono>
 #include <cstdarg>
 #include <cstdio>
-//#include <format> // prool
+#include <format>
 
-#define HAS_TIME_ZONE 0 // prool fool
+#if defined(__clang__)
+#define HAS_TIME_ZONE 0
+#else
+#define HAS_TIME_ZONE 1
+#include <ctime>
+#endif
 
 /**
 * Файл персонального лога терь открывается один раз за каждый вход плеера в игру.
