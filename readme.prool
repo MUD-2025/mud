@@ -5,9 +5,6 @@
 
 ----
 
-For compiling in cygwin need delete or comment string #define HAVE_ICONV
-in file src/utils/utils.cpp
-
 Serhii "Prool" Pustovoitov
 
 Year of 2025, Duisburg, Germany
