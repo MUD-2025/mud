@@ -247,6 +247,15 @@ void TrimLeft(std::string &s) {
 		return !std::isspace(ch);
 	}));
 }
+void TrimLeft(char *s) {
+	char* f = s;
+	while (*f && isspace((unsigned char)*f)) {
+		f++;
+	}
+	if (f != s) {
+		memmove(s, f, strlen(f) + 1);
+	}
+}
 
 void TrimRight(std::string &s) {
 	s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
@@ -255,8 +264,8 @@ void TrimRight(std::string &s) {
 }
 
 void Trim(std::string &s) {
-	TrimLeft(s);
 	TrimRight(s);
+	TrimLeft(s);
 }
 
 void TrimRight(char* string) {
@@ -271,7 +280,9 @@ void TrimRight(char* string) {
 }
 
 void Trim(char *s) {
-	skip_spaces(&s);
+	if (!s || !*s)
+		return;
+	TrimLeft(s);
 	TrimRight(s);
 }
 
