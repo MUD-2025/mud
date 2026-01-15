@@ -170,11 +170,14 @@ void GuildInfo::Process(CharData *trainer, CharData *ch, std::string &argument) 
 
 	act(GetMsg(EMsg::kInquiry), false, ch, nullptr, trainer, kToRoom);
 
-	if (utils::IsAbbrev(argument, "все") || utils::IsAbbrev(argument, "all")) {
+	if (utils::IsAbbr(argument, "все") || utils::IsAbbr(argument, "all")) {
 		LearnAll(trainer, ch);
 		return;
 	}
-
+	if (argument.size() > 100) {
+		SendMsgToChar("Превышена максимальная длина строки.", ch);
+		return;
+	}
 	try {
 		std::size_t talent_num = std::stoi(argument);
 		LearnWithTalentNum(trainer, ch, talent_num);
