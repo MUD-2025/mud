@@ -2141,7 +2141,8 @@ void paste_obj(ObjData *obj, RoomRnum room) {
 				return;
 			}
 			if (obj->get_room_was_in() == kNowhere) {
-				world_objects.AddToExtractedList(obj);
+				ExtractObjFromWorld(obj);
+//				world_objects.AddToExtractedList(obj);
 				return;
 			}
 			RemoveObjFromRoom(obj);
@@ -2152,7 +2153,8 @@ void paste_obj(ObjData *obj, RoomRnum room) {
 			}
 			// зачем сезонные переносить в виртуалку? спуржить нафиг
 			if (!month_ok) {
-				world_objects.AddToExtractedList(obj);
+				ExtractObjFromWorld(obj);
+//				world_objects.AddToExtractedList(obj);
 				return;
 			}
 			obj->set_room_was_in(GET_ROOM_VNUM(room));
@@ -2167,6 +2169,7 @@ void paste_obj(ObjData *obj, RoomRnum room) {
 }
 
 void PasteMobiles() {
+	log("PasteMobiles()");
 	for (auto &it : character_list) {
 	  paste_mob(it.get(), it->in_room);
 	}
@@ -2176,6 +2179,7 @@ void PasteMobiles() {
 }
 
 void paste_on_reset(RoomData *to_room) {
+	log("Paste on reset");
 	const auto people_copy = to_room->people;
 	for (const auto &ch : people_copy) {
 		paste_mob(ch, ch->in_room);
