@@ -235,6 +235,19 @@ static bool ApplyMobParams(CharData* ch, int level, int remorts, int difficulty)
 	// Количество атак всегда фиксируем в 1
 	ch->mob_specials.extra_attack = 0;
 
+	// Замакс делаем большой
+	ch->mob_specials.MaxFactor = 100;
+
+	// Проверяем бризит ли моб
+	bool is_breathing = false;
+	if (ch->IsFlagged(EMobFlag::kFireBreath) ||
+		ch->IsFlagged(EMobFlag::kGasBreath) ||
+		ch->IsFlagged(EMobFlag::kFrostBreath) ||
+		ch->IsFlagged(EMobFlag::kAcidBreath) ||
+		ch->IsFlagged(EMobFlag::kLightingBreath)) {
+		is_breathing = true;
+	}
+
 	// --- Сохранить текущие идентификаторы навыков/заклинаний (чтобы мы могли их сохранить и применить значения по умолчанию, если они не указаны в конфиге). ---
 	std::vector<ESkill> old_skills;
 	old_skills.reserve(ch->get_skills_count());
@@ -242,7 +255,7 @@ static bool ApplyMobParams(CharData* ch, int level, int remorts, int difficulty)
 		if (id == ESkill::kUndefined) {
 			continue;
 		}
-		if (ch->GetTrainedSkill(id) > 0) {
+		if (ch->GetSkill(id) > 0) {
 			old_skills.push_back(id);
 		}
 	}
@@ -259,6 +272,8 @@ static bool ApplyMobParams(CharData* ch, int level, int remorts, int difficulty)
 
 	// Очищаем ненужные флаги и аффекты
 	AFF_FLAGS(ch).unset(EAffect::kFireShield);
+	AFF_FLAGS(ch).unset(EAffect::kIceShield);
+	AFF_FLAGS(ch).unset(EAffect::kAirShield);
 	AFF_FLAGS(ch).unset(EAffect::kMagicGlass);
 	ch->UnsetFlag(EMobFlag::kNotKillPunctual);
 	ch->UnsetFlag(EMobFlag::kNoBash);
@@ -514,6 +529,10 @@ static bool ApplyMobParams(CharData* ch, int level, int remorts, int difficulty)
 					GET_NDD(ch) = base_value;
 				}
 			}
+
+			if (is_breathing) {
+				GET_NDD(ch) *= 0.5;
+			}
 			applied_any = 1;
 		}
 
@@ -532,6 +551,10 @@ static bool ApplyMobParams(CharData* ch, int level, int remorts, int difficulty)
 				if (base_value > GET_SDD(ch)) {
 					GET_SDD(ch) = base_value;
 				}
+			}
+
+			if (is_breathing) {
+				GET_SDD(ch) *= 0.5;
 			}
 			applied_any = 1;
 		}
@@ -924,9 +947,9 @@ bool RecalcMobParamsInZoneWithLevel(int zone_vnum, int remorts, int set_level, i
 	RecalcMobParamsInZone(zone_vnum, remorts, set_level, difficulty);
 	return true;
 }
-
 // --------------------- Команда recalc_zone -----------------------------------
-void do_recalc_zone(const char *argument) {
+
+void DGRecalcZone(const char *argument) {
 	constexpr size_t kBuf = 256;
 
 	char arg1[kBuf]{}; // zone_vnum
@@ -938,22 +961,17 @@ void do_recalc_zone(const char *argument) {
 	argument = three_arguments(argument, arg1, arg2, arg3);
 	one_argument(argument, arg4);
 
-//	if (!*arg1 || !*arg2 || !*arg3 || !*arg4) {
-//		SendMsgToChar(ch,
-//			"Usage: recalc_zone <zone_vnum> <remorts> <player_level> <difficulty>\r\n");
-//		return;
-//	}
 
 	const int zone_vnum		= atoi(arg1);
 	const int remorts		= atoi(arg2);
 	const int player_level  = atoi(arg3);
 	const int difficulty    = atoi(arg4);
 
-//	if (zone_vnum < dungeons::kZoneStartDungeons) {
+	if (zone_vnum < dungeons::kZoneStartDungeons) {
 //		SendMsgToChar(ch,
-//			"Ошибка: перерасчёт разрешён только для зон с vnum >= 30000.\r\n");
-//		return;
-//	}
+			mudlog("Ошибка: перерасчёт разрешён только для зон с vnum >= 30000.\r\n");
+		return;
+	}
 
 	RecalcMobParamsInZoneWithLevel(zone_vnum, remorts, player_level, difficulty);
 	const int added_level_by_difficulty = difficulty * mob_classes::GetLvlPerDifficulty();
@@ -961,6 +979,26 @@ void do_recalc_zone(const char *argument) {
 //		"Zone recalc done. (zone=%d, remorts=%d, base_lvl=%d, difficulty=%d, +lvl=%d)\r\n",
 //		zone_vnum, remorts, player_level, difficulty, added_level_by_difficulty);
 
+}
+
+void do_recalc_zone(CharData *ch, char *argument, int /*cmd*/, int /*subcmd*/) {
+	constexpr size_t kBuf = 256;
+	char arg1[kBuf]{}; // zone_vnum
+	char arg2[kBuf]{}; // remorts
+	char arg3[kBuf]{}; // player_level
+	char arg4[kBuf]{}; // difficulty
+	std::string full_arg{argument};
+	// <zone_vnum> <remorts> <player_level> <difficulty>
+	argument = three_arguments(argument, arg1, arg2, arg3);
+	one_argument(argument, arg4);
+	
+	if (!*arg1 || !*arg2 || !*arg3 || !*arg4) {
+		SendMsgToChar(ch,
+			"Usage: recalc_zone <zone_vnum> <remorts> <player_level> <difficulty>\r\n");
+		return;
+	}
+	DGRecalcZone(full_arg.c_str());
+	SendMsgToChar(ch, "Zone recalc done. %s", full_arg.c_str());
 }
 
 // vim: ts=4 sw=4 tw=0 noet syntax=cpp :
