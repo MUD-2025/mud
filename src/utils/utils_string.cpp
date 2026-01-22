@@ -131,22 +131,12 @@ bool IsEqual(const std::string &abbr, const std::string &words) {
 	std::vector<std::string> words_list = utils::Split(words);
 	std::vector<std::string> abbr_list = utils::Split(utils::FixDot(abbr));
 	auto it = words_list.begin();
-	auto len = abbr_list.size();
-	size_t count = 1;
 
 	for (auto abr : abbr_list) {
-		for (; it != words_list.end(); it++) {
-			if (utils::IsAbbr(abr.c_str(), (*it).c_str())) {
-				break;
-			} else
-				count++;
-
-		}
-		if (it == words_list.end())
+		if (it == words_list.end() || !utils::IsAbbr(abr.c_str(), (*it).c_str()))
 			return false;
+		++it;
 	}
-	if (count != len)
-		return false;
 	return true;
 }
 
