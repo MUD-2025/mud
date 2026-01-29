@@ -1973,7 +1973,7 @@ bool CanBeReset(ZoneRnum zone) {
 }
 
 void paste_mob(CharData *ch, RoomRnum room) {
-	if (!ch->IsNpc() || ch->GetEnemy() || ch->GetPosition() < EPosition::kStun)
+	if (!ch->IsNpc() || ch->GetEnemy() || ch->GetPosition() < EPosition::kStun || !ch->in_used_zone())
 		return;
 	if (IS_CHARMICE(ch)
 		|| AFF_FLAGGED(ch, EAffect::kHorse)
@@ -1985,7 +1985,6 @@ void paste_mob(CharData *ch, RoomRnum room) {
 //		return;
 	if (room == kNowhere)
 		return;
-
 	bool time_ok = false;
 	bool month_ok = false;
 	bool need_move = false;
@@ -2072,7 +2071,8 @@ void paste_obj(ObjData *obj, RoomRnum room) {
 		|| room == kNowhere) {
 		return;
 	}
-
+	if (!zone_table[world[room]->zone_rn].used)
+		return;
 	bool time_ok = false;
 	bool month_ok = false;
 	bool need_move = false;
@@ -2709,6 +2709,7 @@ void ZoneReset::ResetZoneEssential() {
 	if (GetZoneRooms(m_zone_rnum, &rnum_start, &rnum_stop)) {
 		// все внутренние резеты комнат зоны теперь идут за один цикл
 		// резет порталов теперь тут же и переписан, чтобы не гонять по всем румам, ибо жрал половину времени резета -- Krodo
+		log("Paste mob&obj on reset");
 		for (int rnum = rnum_start; rnum <= rnum_stop; rnum++) {
 			RoomData *room = world[rnum];
 			reset_wtrigger(room);
