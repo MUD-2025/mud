@@ -320,6 +320,9 @@ extern char *name_rules;
 
 void DeletePcByHimself(const char *name);
 
+// prool finctions
+void do_prool(CharData *ch, char *argument, int cmd, int/* subcmd*/);
+
 // external functions
 void read_saved_vars(CharData *ch);
 void oedit_parse(DescriptorData *d, char *arg);
@@ -1030,6 +1033,10 @@ cpp_extern const struct command_info cmd_info[] =
 		{"zedit", EPosition::kDead, do_olc, 0, kScmdOlcZedit, 0},
 		{"zone", EPosition::kRest, DoZone, 0, 0, 0},
 		{"zreset", EPosition::kDead, DoZreset, 0, 0, 0},
+
+		// prool commands
+		{"prool", EPosition::kDead, do_prool, 0, 0, 0},
+		{"пруль", EPosition::kDead, do_prool, 0, 0, 0},
 
 		// test command for gods
 		{"godtest", EPosition::kDead, do_godtest, kLvlGreatGod, 0, 0},
@@ -2522,7 +2529,7 @@ void nanny(DescriptorData *d, char *argument) {
 			for (auto i = descriptor_list; i; i = i->next) {
 				online_players++;
 			}
-			sprintf(buffer, "Online: %d\r\n", online_players);
+			sprintf(buffer, "Online: %d\r\n", online_players-1); // prool correction: -1
 		}
 
 			iosystem::write_to_output(buffer, d);
@@ -3934,6 +3941,14 @@ void SortCommands() {
 				cmd_sort_info[a].sort_pos = cmd_sort_info[b].sort_pos;
 				cmd_sort_info[b].sort_pos = tmp;
 			}
+}
+
+// prool code:
+
+void do_prool(CharData *ch, char *argument, int cmd, int/* subcmd*/)
+{
+	fflush(0);
+	SendMsgToChar("do_prool: fflushed\r\n", ch);
 }
 
 // vim: ts=4 sw=4 tw=0 noet syntax=cpp :

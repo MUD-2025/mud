@@ -600,7 +600,7 @@ void Heartbeat::pulse(const int missed_pulses, pulse_label_t &label) {
 
 	label.clear();
 	advance_pulse_numbers();
-	log("Heartbeat pulse");
+	//log("Heartbeat pulse"); // by prool
 	character_list.PurgeExtractedList();
 	world_objects.PurgeExtractedList();
 	for (std::size_t i = 0; i != m_steps.size(); ++i) {
@@ -618,7 +618,7 @@ void Heartbeat::pulse(const int missed_pulses, pulse_label_t &label) {
 			step.action()->perform(pulse_number(), missed_pulses);
 			const auto execution_time = timer.delta().count();
 			if (step.modulo() >= kSecsPerMudHour * kPassesPerSec) {
-				log("Heartbeat step: %s", step.name().c_str());
+				//log("Heartbeat step: %s", step.name().c_str()); // prool
 			}
 			if (pmem_used != last_pmem_used) {
 //				char buf [128];

@@ -708,7 +708,7 @@ void script_trigger_check(int mode) {
 		default:
 		break;
 	}
-	log("script_trigger_check() mode %d всего: %f ms.", mode, timer.delta().count());
+	//log("script_trigger_check() mode %d time %f ms.", mode, timer.delta().count()); // prool
 }
 
 // проверка каждый час на триги изменении времени

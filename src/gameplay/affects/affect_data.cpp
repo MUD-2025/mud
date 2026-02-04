@@ -276,7 +276,7 @@ void player_affect_update() {
 			affect_total(i.get());
 		}
 	}
-	log("player affect update: timer %f, num players %d", timer.delta().count(), count);
+	//log("player affect update: timer %f, num players %d", timer.delta().count(), count); // prool
 }
 
 // This file update battle affects only

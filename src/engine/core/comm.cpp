@@ -174,6 +174,8 @@ extern const char* revision;
 *        & becomes &amp;
 */
 
+char *ptime(void); // prool
+
 int count_mxp_tags(const int bMXP, const char *txt, int length) {
 	char c;
 	const char *p;
@@ -705,7 +707,7 @@ int main_function(int argc, char **argv) {
 		world_loader.BootWorld();
 		printf("Done.");
 	} else {
-		printf("Running game on port %d.\r\n", port);
+		printf("Running game on port %d...\r\n", port);
 
 		// стль и буст юзаются уже немало где, а про их экспешены никто не думает
 		// пока хотя бы стльные ловить и просто логировать факт того, что мы вышли
@@ -1229,7 +1231,7 @@ void game_loop(int epoll, socket_t mother_desc)
 void game_loop(socket_t mother_desc)
 #endif
 {
-	printf("Game started.\n");
+	printf("Game started %s\n", ptime()); // prool
 
 #ifdef HAS_EPOLL
 	struct epoll_event *events;

@@ -134,7 +134,7 @@ DescriptorData::DescriptorData() : bad_pws(0),
 }
 
 void DescriptorData::msdp_support(bool on) {
-	log("INFO: MSDP support enabled for client %s.\n", host);
+	log("INFO: MSDP support enabled for client %s.", host); // prool
 	m_msdp_support = on;
 }
 
