@@ -3134,7 +3134,7 @@ CharData *find_char(long uid) {
 	if (it != chardata_by_uid.end()) {
 		return it->second;
 	}
-	return find_pc(uid);
+	return nullptr;
 }
 
 CharData *find_pc(long uid) {
