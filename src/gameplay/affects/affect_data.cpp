@@ -16,6 +16,7 @@
 #include "engine/ui/cmd/do_equip.h"
 #include "gameplay/core/base_stats.h"
 #include "gameplay/fight/fight.h"
+#include "utils/backtrace.h"
 
 std::unordered_set<CharData *> affected_mobs;
 
@@ -355,9 +356,13 @@ void mobile_affect_update() {
 //		}
 		auto affect_i = ch->affected.begin();
 
+		if (ch->affected.empty()) {
+			mudlog(fmt::format("ERROR!!! Проверка счетчика аффектов у очищенного моба {} #{}", ch->get_name(), GET_MOB_VNUM(ch)));
+			continue;
+		}
 		while (affect_i != ch->affected.end()) {
 			const auto &affect = *affect_i;
-
+			
 			if (affect->duration == 0) {
 				if (affect->type >= ESpell::kFirst && affect->type <= ESpell::kLast) {
 					if (affect->type == ESpell::kCharm || affect->bitvector == to_underlying(EAffect::kCharmed)) {
