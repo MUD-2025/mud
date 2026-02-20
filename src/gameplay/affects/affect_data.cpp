@@ -186,10 +186,39 @@ void UpdateAffectOnPulse(CharData *ch, int count) {
 		affect_total(ch);
 	}
 }
+
+void player_timed_update() {
+	for (auto d = descriptor_list; d; d = d->next) {
+		if (d->state != EConState::kPlaying)
+			continue;
+		const auto i = d->get_character();
+		auto ch = i.get();
+
+		decltype(ch->timed) timed_skill;
+		for (auto timed = ch->timed; timed; timed = timed_skill) {
+			timed_skill = timed->next;
+			if (timed->time >= 1) {
+				timed->time--;
+			} else {
+				ExpireTimedSkill(ch, timed);
+			}
+		}
+		decltype(ch->timed_feat) timed_feat;
+		for (auto timed = ch->timed_feat; timed; timed = timed_feat) {
+			timed_feat = timed->next;
+			if (timed->time >= 1) {
+				timed->time--;
+			} else {
+				ExpireTimedFeat(ch, timed);
+			}
+		}
+	}
+}
+
 // игроки раз в 2 секунды
 void player_affect_update() {
 	utils::CExecutionTimer timer;
-	int count = 0;
+	int count = 0, call = 0;
 //	character_list.foreach_on_copy([&count](const CharData::shared_ptr &i) {
 	for (auto d = descriptor_list; d; d = d->next) {
 		if (d->state != EConState::kPlaying)
@@ -202,7 +231,10 @@ void player_affect_update() {
 		if (i->purged() || deathtrap::tunnel_damage(i.get())) {
 			return;
 		}
-		count++;
+		if (!i->affected.empty()) {
+			++count;
+		}
+		++call;
 		bool was_purged = false;
 		bool set_abstinent = false;
 		auto affect_i = i->affected.begin();
@@ -279,7 +311,7 @@ void player_affect_update() {
 			affect_total(i.get());
 		}
 	}
-	//log("player affect update: timer %f, num players %d", timer.delta().count(), count); // prool
+	log("player affect update: timer %f, num affected players %d, all %d", timer.delta().count(), count, call);
 }
 
 // This file update battle affects only
@@ -357,7 +389,7 @@ void mobile_affect_update() {
 		auto affect_i = ch->affected.begin();
 
 		if (ch->affected.empty()) {
-			mudlog(fmt::format("ERROR!!! Проверка счетчика аффектов у очищенного моба {} #{}", ch->get_name(), GET_MOB_VNUM(ch)));
+			log(fmt::format("ERROR!!! Проверка счетчика аффектов у очищенного моба {} #{}", ch->get_name(), GET_MOB_VNUM(ch)));
 			it = affected_mobs.erase(it);
 			continue;
 		}
