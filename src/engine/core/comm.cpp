@@ -174,7 +174,8 @@ extern const char* revision;
 *        & becomes &amp;
 */
 
-char *ptime(void); // prool
+// prool
+char *ptime(void);
 
 int count_mxp_tags(const int bMXP, const char *txt, int length) {
 	char c;
@@ -1264,6 +1265,7 @@ void game_loop(socket_t mother_desc)
 	{
 		if (descriptor_list == nullptr) {
 			log("No connections.  Going to sleep.");
+			printf("prool debug. nobody here\r\n");
 #ifdef HAS_EPOLL
 			if (epoll_wait(epoll, events, MAXEVENTS, -1) == -1)
 #else

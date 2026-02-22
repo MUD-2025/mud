@@ -1074,13 +1074,16 @@ int up_obj_where(ObjData *obj) {
 
 void hour_update() {
 	DescriptorData *i;
+	int prool_count=0;
 
 	for (i = descriptor_list; i; i = i->next) {
 		if  (i->state != EConState::kPlaying || i->character == nullptr || i->character->IsFlagged(EPlrFlag::kWriting))
 			continue;
 		sprintf(buf, "%sМинул час.%s\r\n", kColorBoldRed, kColorNrm);
 		iosystem::write_to_output(buf, i);
+		prool_count++;
 	}
+printf("prool debug. players %i\r\n", prool_count);
 }
 
 void room_point_update() {
