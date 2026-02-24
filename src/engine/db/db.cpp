@@ -1279,6 +1279,7 @@ void CheckStartRooms() {
 	else
 		{
 		log("prool debug: ne mogu nayti nikakuyui mortal start room :(");
+		// prool: tut moyzhno sdelat startovoy pervuyu komnatu mira ???
 		exit(1);
 		}
 

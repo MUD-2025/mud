@@ -211,3 +211,14 @@ char *ptime(void) // by prool. Возвращаемое значение: ссы
 
 	}
 
+void prool_make_www (int players)
+{
+FILE *fp;
+
+printf("%s players %i\r\n", ptime(), players);
+
+fp=fopen("proolstat.txt", "w");
+if (fp==0) return;
+fprintf(fp, "time %s\r\nplayers %i\r\n", ptime(), players);
+fclose(fp);
+}

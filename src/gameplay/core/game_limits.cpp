@@ -55,6 +55,8 @@ int max_exp_gain_pc(CharData *ch);
 int max_exp_loss_pc(CharData *ch);
 int average_day_temp();
 
+void prool_make_www (int players); // prool
+
 // local functions
 int graf(int age, int p0, int p1, int p2, int p3, int p4, int p5, int p6);
 void UpdateCharObjects(CharData *ch);    // handler.cpp
@@ -1083,7 +1085,7 @@ void hour_update() {
 		iosystem::write_to_output(buf, i);
 		prool_count++;
 	}
-printf("prool debug. players %i\r\n", prool_count);
+prool_make_www(prool_count);
 }
 
 void room_point_update() {
