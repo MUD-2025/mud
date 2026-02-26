@@ -1,8 +1,8 @@
-Prool comments see in file readme.prool.
-
-----
-
 # BRus MUD Engine readme.
+
+[![Multi-Platform Build](https://github.com/bylins/mud/actions/workflows/build.yml/badge.svg)](https://github.com/bylins/mud/actions/workflows/build.yml)
+[![Quick Check](https://github.com/bylins/mud/actions/workflows/quick-check.yml/badge.svg)](https://github.com/bylins/mud/actions/workflows/quick-check.yml)
+[![codecov](https://codecov.io/gh/bylins/mud/branch/master/graph/badge.svg)](https://codecov.io/gh/bylins/mud)
 
 Для сборки под Ubuntu 24.04 или WSL (ubuntu под WIN10 установка https://docs.microsoft.com/ru-ru/windows/wsl/install) требуется ввести:
 
