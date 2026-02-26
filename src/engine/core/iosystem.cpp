@@ -959,7 +959,7 @@ int write_to_descriptor(socket_t desc, const char *txt, size_t total) {
 
 		if (bytes_written < 0) {
 			// Fatal error.  Disconnect the player_data.
-			perror("prool debug error 2: SYSERR: write_to_descriptor");
+			//perror("prool debug error 2: SYSERR: write_to_descriptor");
 			return (0);
 		} else if (bytes_written == 0) {
 			/*

@@ -1,7 +1,7 @@
 // prool code for MUD
 // proolix@gmail.com
 // http://mud.kharkov.org
-// Duisburg, Germany, 2026
+// Virtustan, Europe, 2026
 // (c) GPL v.3
 
 #if 0	
@@ -215,7 +215,7 @@ void prool_make_www (int players)
 {
 FILE *fp;
 
-printf("%s players %i\r\n", ptime(), players);
+//printf("%s players %i\r\n", ptime(), players);
 
 fp=fopen("proolstat.txt", "w");
 if (fp==0) return;
