@@ -1,6 +1,6 @@
 // prool code for MUD
 // proolix@gmail.com
-// http://mud.kharkov.org
+// http://mud.virtustan.net
 // Virtustan, Europe, 2026
 // (c) GPL v.3
 
