@@ -51,6 +51,7 @@
 		Значением является число в восьмеричной системе счисления.
 		Например: 022 (новый файл получит права 644: rw-r--r--).
 		-->
+		
 		<syslog>
 			<filename>syslog</filename>
 			<buffered>LINE</buffered>
@@ -60,7 +61,6 @@
 		
 		<errlog>
 			<buffered>NO</buffered>
-			<mode>APPEND</mode>
 		</errlog>
 			
 		<imlog>
