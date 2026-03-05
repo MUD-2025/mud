@@ -322,6 +322,7 @@ void DeletePcByHimself(const char *name);
 
 // prool finctions
 void do_prool(CharData *ch, char *argument, int cmd, int/* subcmd*/);
+char *ptime(void); // by prool. Возвращаемое значение: ссылка на текстовую строку с текущим временем
 
 // external functions
 void read_saved_vars(CharData *ch);
@@ -2529,9 +2530,35 @@ void nanny(DescriptorData *d, char *argument) {
 			for (auto i = descriptor_list; i; i = i->next) {
 				online_players++;
 			}
-			sprintf(buffer, "Online: %d\r\n", online_players-1); // prool correction: -1
+			sprintf(buffer, "Virtustan-Chimera MUD by Prool\r\n\r\nOnline: %d\r\n", online_players-1); // prool correction: -1
 		}
+#if 1 // prool
+	char buf0 [1024];
+	FILE *fp;
+	int online_players;
 
+	online_players = 0;
+	for (auto i = descriptor_list; i; i = i->next) {
+		online_players++;
+	}
+
+	fp=fopen("text0.txt","r");
+	if (fp) {
+		do {
+		buf0[0]=0;
+		fgets(buf0,1024,fp);
+		//printf("'%s'\n", buf0);
+		iosystem::write_to_output(buf0, d);
+		} while(!feof(fp));
+	}
+	else {
+	//printf("file text0.txt not found\n");
+	}
+
+	sprintf(buf0,"\r\nYour IP is %s\r\nServer time is %s\r\n\r\n",
+		d->host, ptime());
+	iosystem::write_to_output(buf0, d);
+#endif // prool
 			iosystem::write_to_output(buffer, d);
 			ShowEncodingPrompt(d, false);
 			d->state = EConState::kGetKeytable;
