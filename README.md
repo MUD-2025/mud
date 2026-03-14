@@ -1,3 +1,7 @@
+prools comment in file readme.prool
+
+-----------------------------------------------------------------------------------------
+
 # BRus MUD Engine readme.
 
 Для сборки под Ubuntu 24.04 или WSL (ubuntu под WIN10 установка https://docs.microsoft.com/ru-ru/windows/wsl/install) требуется ввести:
