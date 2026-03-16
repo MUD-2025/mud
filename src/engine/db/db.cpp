@@ -54,6 +54,7 @@
 #include "gameplay/mechanics/mob_races.h"
 #include "gameplay/mechanics/treasure_cases.h"
 #include "gameplay/mechanics/cities.h"
+#include "gameplay/ai/mobact.h"
 #include "administration/proxy.h"
 #include "utils/utils_time.h"
 #include "gameplay/classes/pc_classes.h"
@@ -2129,6 +2130,13 @@ void paste_mob(CharData *ch, RoomRnum room) {
 	bool need_move = false;
 	bool no_month = true;
 	bool no_time = true;
+	const bool seasonal_mob =
+		ch->IsFlagged(EMobFlag::kAppearsWinter)
+		|| ch->IsFlagged(EMobFlag::kAppearsSpring)
+		|| ch->IsFlagged(EMobFlag::kAppearsSummer)
+		|| ch->IsFlagged(EMobFlag::kAppearsAutumn);
+
+
 
 	if (ch->IsFlagged(EMobFlag::kAppearsDay)) {
 		if (weather_info.sunlight == kSunRise || weather_info.sunlight == kSunLight)
@@ -2174,23 +2182,43 @@ void paste_mob(CharData *ch, RoomRnum room) {
 		need_move = true;
 		no_month = false;
 	}
-	if (need_move) {
+	if (need_move)
+	{
 		month_ok |= no_month;
 		time_ok |= no_time;
-		if (month_ok && time_ok) {
+		if (month_ok && time_ok)
+		{
 			if (world[room]->vnum != zone_table[world[room]->zone_rn].top)
+			{
 				return;
+			}
 
-			if (GET_LASTROOM(ch) == kNowhere) {
+			if (GET_LASTROOM(ch) == kNowhere)
+			{
 				ExtractCharFromWorld(ch, false, true);
 				return;
 			}
 
 			RemoveCharFromRoom(ch);
 			PlaceCharToRoom(ch, GET_LASTROOM(ch));
-		} else {
+		}
+		else
+		{
 			if (world[room]->vnum == zone_table[world[room]->zone_rn].top)
+			{
 				return;
+			}
+
+			if (seasonal_mob)
+			{
+				if (mob_ai::drop_mob_objects_to_box(ch))
+				{
+					char log_buf[kMaxInputLength];
+					snprintf(log_buf, sizeof(log_buf), "Сезонный моб %s [%d] сложил вещи в узелок в комнате %d перед уходом в виртуальную комнату.",
+						GET_NAME(ch), GET_MOB_VNUM(ch), world[room]->vnum);
+					mudlog(log_buf, NRM, kLvlGod, SYSLOG, true);
+				}
+			}
 
 			GET_LASTROOM(ch) = room;
 			RemoveCharFromRoom(ch);
@@ -2326,8 +2354,6 @@ void paste_on_reset(RoomData *to_room) {
 	for (const auto &ch : people_copy) {
 		paste_mob(ch, ch->in_room);
 	}
-	ObjData *obj_next;
-
 	for (auto obj : to_room->contents) {
 		paste_obj(obj, obj->get_in_room());
 	}
@@ -2404,7 +2430,7 @@ void ZoneReset::ResetZoneEssential() {
 	int cmd_no;
 	int cmd_tmp, obj_in_room_max, obj_in_room = 0;
 	CharData *mob = nullptr, *leader = nullptr;
-	ObjData *obj_to, *obj_room;
+	ObjData *obj_to;
 	CharData *tmob = nullptr;    // for trigger assignment
 	ObjData *tobj = nullptr;    // for trigger assignment
 	int last_state, curr_state;    // статус завершения последней и текущей команды
