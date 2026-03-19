@@ -461,6 +461,10 @@ void CharData::purge() {
 			free(FREEZE_REASON(this));
 		if (NAME_REASON(this))
 			free(NAME_REASON(this));
+		if (GCURSE_REASON(this))
+			free(GCURSE_REASON(this));
+		if (UNREG_REASON(this))
+			free(UNREG_REASON(this));
 // End reasons cleanup
 
 		if (KARMA(this))
@@ -1723,6 +1727,8 @@ void CharData::add_follower(CharData *ch) {
 	if (ch->IsNpc() && ch->IsFlagged(EMobFlag::kNoGroup))
 		return;
 	if (this->in_room != ch->in_room) {
+		log(fmt::format("попытка загрупить игроков в разных комнатах, лидер {} #{} фолловер {} #{}",
+				this->get_name(), GET_MOB_VNUM(this), ch->get_name(), GET_MOB_VNUM(ch)));
 		mudlog(fmt::format("попытка загрупить игроков в разных комнатах, лидер {} #{} фолловер {} #{}",
 				this->get_name(), GET_MOB_VNUM(this), ch->get_name(), GET_MOB_VNUM(ch)));
 		return;

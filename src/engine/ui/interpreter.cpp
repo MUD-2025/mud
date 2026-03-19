@@ -2239,7 +2239,7 @@ void DoAfterPassword(DescriptorData *d) {
 
 	const uint32_t MASK = 16777215;
 	for (const auto &logon : LOGON_LIST(d->character)) {
-		uint32_t current_subnet = inet_addr(logon.ip) & MASK;
+		uint32_t current_subnet = inet_addr(logon.ip.c_str()) & MASK;
 		subnets.insert(current_subnet);
 	}
 
@@ -2340,8 +2340,8 @@ void init_char(CharData *ch, PlayerIndexElement &element) {
 	element.level = 0;
 	element.remorts = 0;
 	element.last_logon = -1;
-	element.mail = nullptr;//added by WorM mail
-	element.last_ip = nullptr;//added by WorM последний айпи
+	element.mail.clear();
+	element.last_ip.clear();
 
 	if (GetRealLevel(ch) > kLvlGod) {
 		SetGodSkills(ch);
@@ -3891,12 +3891,8 @@ void DeletePcByHimself(const char *name) {
 		player_table[id].remorts = -1;
 		player_table[id].last_logon = -1;
 		player_table[id].activity = -1;
-		if (player_table[id].mail)
-			free(player_table[id].mail);
-		player_table[id].mail = nullptr;
-		if (player_table[id].last_ip)
-			free(player_table[id].last_ip);
-		player_table[id].last_ip = nullptr;
+		player_table[id].mail.clear();
+		player_table[id].last_ip.clear();
 	}
 }
 
