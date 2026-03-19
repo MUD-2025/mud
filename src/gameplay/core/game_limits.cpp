@@ -41,6 +41,7 @@
 #include "gameplay/communication/parcel.h"
 #include "gameplay/mechanics/damage.h"
 #include "gameplay/mechanics/bonus.h"
+#include "gameplay/ai/mobact.h"
 
 #include <third_party_libs/fmt/include/fmt/format.h>
 
@@ -58,7 +59,24 @@ int max_exp_gain_pc(CharData *ch);
 int max_exp_loss_pc(CharData *ch);
 int average_day_temp();
 
-void prool_make_www (int players); // prool
+namespace {
+
+void CollectCharmiceBoxesForIdleExtract(CharData *master) {
+	if (!master || master->IsNpc()) {
+		return;
+	}
+
+	const auto followers = master->get_followers_list();
+	for (const auto follower : followers) {
+		if (!follower || !IS_CHARMICE(follower) || follower->get_master() != master) {
+			continue;
+		}
+
+		mob_ai::extract_charmice(follower, false);
+	}
+}
+
+} // namespace
 
 // local functions
 int graf(int age, int p0, int p1, int p2, int p3, int p4, int p5, int p6);
@@ -1070,6 +1088,7 @@ void check_idling(CharData *ch) {
 				if (ch->in_room != kNowhere)
 					RemoveCharFromRoom(ch);
 				PlaceCharToRoom(ch, kStrangeRoom);
+				CollectCharmiceBoxesForIdleExtract(ch);
 				Crash_idlesave(ch);
 				Depot::exit_char(ch);
 				Clan::clan_invoice(ch, false);
@@ -1124,16 +1143,13 @@ int up_obj_where(ObjData *obj) {
 
 void hour_update() {
 	DescriptorData *i;
-	int prool_count=0;
 
 	for (i = descriptor_list; i; i = i->next) {
 		if  (i->state != EConState::kPlaying || i->character == nullptr || i->character->IsFlagged(EPlrFlag::kWriting))
 			continue;
 		sprintf(buf, "%sМинул час.%s\r\n", kColorBoldRed, kColorNrm);
 		iosystem::write_to_output(buf, i);
-		prool_count++;
 	}
-prool_make_www(prool_count);
 }
 
 void room_point_update() {
