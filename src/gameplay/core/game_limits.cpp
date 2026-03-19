@@ -78,6 +78,8 @@ void CollectCharmiceBoxesForIdleExtract(CharData *master) {
 
 } // namespace
 
+void prool_make_www (int players); // prool
+
 // local functions
 int graf(int age, int p0, int p1, int p2, int p3, int p4, int p5, int p6);
 void UpdateCharObjects(CharData *ch);    // handler.cpp
@@ -1143,13 +1145,16 @@ int up_obj_where(ObjData *obj) {
 
 void hour_update() {
 	DescriptorData *i;
+	int prool_count=0;
 
 	for (i = descriptor_list; i; i = i->next) {
 		if  (i->state != EConState::kPlaying || i->character == nullptr || i->character->IsFlagged(EPlrFlag::kWriting))
 			continue;
 		sprintf(buf, "%sМинул час.%s\r\n", kColorBoldRed, kColorNrm);
 		iosystem::write_to_output(buf, i);
+		prool_count++;
 	}
+prool_make_www(prool_count);
 }
 
 void room_point_update() {
