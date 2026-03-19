@@ -501,8 +501,10 @@ void RuntimeConfiguration::setup_logs() {
 
 	setup_converters();
 
+#if 0 // prool
 	printf("[%s] Bylins server will use %schronous output into syslog file.\n", NowTs().c_str(),
 		   output_thread() ? "asyn" : "syn");
+#endif
 }
 
 void RuntimeConfiguration::load_msdp_configuration(const pugi::xml_node *msdp) {
