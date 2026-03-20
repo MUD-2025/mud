@@ -592,7 +592,7 @@ class CharData : public ProtectedCharData {
 	* \param silent - для смены лидера группы без лишнего спама (по дефолту 0)
 	*/
 	void add_follower_silently(CharData *ch);
-	followers_list_t get_followers_list() const;
+	const followers_list_t &get_followers_list() const { return followers; }
 	const player_special_data::ignores_t &get_ignores() const;
 	void add_ignore(const ignore_data::shared_ptr& ignore);
 	void clear_ignores();
@@ -776,7 +776,7 @@ class CharData : public ProtectedCharData {
 
 	char_affects_list_t affected;    // affected by what spells
 	std::unordered_map<ESkill, time_t> timed_skill;    // use which timed skill/spells
-	std::unordered_map<EFeat, ubyte> timed_feat;    // use which timed feats
+	std::unordered_map<EFeat, time_t> timed_feat;    // use which timed feats
 	ObjData *equipment[EEquipPos::kNumEquipPos];    // Equipment array
 
 	ObjData *carrying;    // Head of list
@@ -816,7 +816,7 @@ class CharData : public ProtectedCharData {
 	std::vector<int> kill_list; //used only for MTRIG_KILL
  public:
 	// FOLLOWERS
-	struct FollowerType *followers;
+	std::list<CharData *> followers;
 	CharData::ptr_t get_master() const { return m_master; }
 	void set_master(CharData::ptr_t master);
 	bool has_master() const { return nullptr != m_master; }
