@@ -1125,7 +1125,7 @@ std::string MakePrompt(DescriptorData *d) {
 		}
 
 		if (ch->IsFlagged(EPrf::kDispExp)) {
-			if (ch->IsImmortal()) {
+			if (IS_IMMORTAL(ch)) {
 				fmt::format_to(std::back_inserter(out), "??? ");
 			} else {
 				fmt::format_to(std::back_inserter(out), "{}o ",

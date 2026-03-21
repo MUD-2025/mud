@@ -2504,7 +2504,7 @@ void ZoneReset::ResetZoneEssential() {
 					leader = nullptr;
 					if (reset_cmd.arg1 >= kFirstRoom && reset_cmd.arg1 <= top_of_world) {
 						for (const auto ch : world[reset_cmd.arg1]->people) {
-							if (ch->IsNpc() && ch->get_rnum() == reset_cmd.arg2) {
+							if (ch->IsNpc() && GET_MOB_RNUM(ch) == reset_cmd.arg2) {
 								leader = ch;
 							}
 						}
@@ -2512,7 +2512,7 @@ void ZoneReset::ResetZoneEssential() {
 						if (leader) {
 							for (const auto ch : world[reset_cmd.arg1]->people) {
 								if (ch->IsNpc()
-									&& ch->get_rnum() == reset_cmd.arg3
+									&& GET_MOB_RNUM(ch) == reset_cmd.arg3
 									&& leader != ch
 									&& !ch->makes_loop(leader)) {
 									if (IS_CHARMICE(ch)) {
@@ -2963,7 +2963,7 @@ int CountMobsInRoom(int m_num, int r_num) {
 	int count = 0;
 
 	for (const auto &ch : world[r_num]->people) {
-		if (m_num == ch->get_rnum()
+		if (m_num == GET_MOB_RNUM(ch)
 			&& !ch->IsFlagged(EMobFlag::kResurrected)) {
 			count++;
 		}
