@@ -1294,10 +1294,10 @@ inline void process_io(fd_set input_set, fd_set output_set, fd_set exc_set, fd_s
 		if (d->character) {
 			d->character->punctual_wait -=
 				(d->character->punctual_wait > 0 ? 1 : 0);
-			if (IS_IMMORTAL(d->character)) {
+			if (d->character->IsImmortal()) {
 				d->character->zero_wait();
 			}
-			if (IS_IMMORTAL(d->character)
+			if (d->character->IsImmortal()
 				|| d->character->punctual_wait < 0) {
 				d->character->punctual_wait = 0;
 			}
@@ -1309,7 +1309,7 @@ inline void process_io(fd_set input_set, fd_set output_set, fd_set exc_set, fd_s
 		if (!get_from_q(&d->input, comm, &aliased)) {
 			if (d->state != EConState::kPlaying &&
 				d->state != EConState::kDisconnect &&
-				time(nullptr) - d->input_time > 300 && d->character && !IS_GOD(d->character))
+				time(nullptr) - d->input_time > 300 && d->character && !d->character->IsGod())
 #ifdef HAS_EPOLL
 				close_socket(d, true, epoll, events, n);
 #else
@@ -2315,7 +2315,7 @@ void SendMsgToGods(const char *msg) {
 	}
 
 	for (i = descriptor_list; i; i = i->next) {
-		if  (i->state != EConState::kPlaying || i->character == nullptr || !IS_GOD(i->character)) {
+		if  (i->state != EConState::kPlaying || i->character == nullptr || !i->character->IsGod()) {
 			continue;
 		}
 		iosystem::write_to_output(msg, i);
@@ -2370,7 +2370,7 @@ void perform_act(const char *orig,
 						snprintf(nbuf,
 								 sizeof(nbuf),
 								 "&q%s&Q",
-								 (!ch->IsNpc() && (IS_IMMORTAL(ch) || GET_INVIS_LEV(ch))) ? GET_NAME(ch) : APERS(ch,
+								 (!ch->IsNpc() && (ch->IsImmortal() || GET_INVIS_LEV(ch))) ? GET_NAME(ch) : APERS(ch,
 																												to,
 																												0,
 																												arena));
@@ -2380,7 +2380,7 @@ void perform_act(const char *orig,
 						snprintf(nbuf,
 								 sizeof(nbuf),
 								 "&q%s&Q",
-								 (!ch->IsNpc() && (IS_IMMORTAL(ch) || GET_INVIS_LEV(ch))) ? GET_PAD(ch, padis)
+								 (!ch->IsNpc() && (ch->IsImmortal() || GET_INVIS_LEV(ch))) ? GET_PAD(ch, padis)
 																						  : APERS(ch, to, padis, arena));
 						i = nbuf;
 					}
@@ -2480,7 +2480,7 @@ void perform_act(const char *orig,
 				case '$': i = "$";
 					break;
 
-				case 'a': i = IS_IMMORTAL(ch) || (arena) ? GET_CH_SUF_6(ch) : GET_CH_VIS_SUF_6(ch, to);
+				case 'a': i = ch->IsImmortal() || (arena) ? GET_CH_SUF_6(ch) : GET_CH_VIS_SUF_6(ch, to);
 					break;
 				case 'A':
 					if (vict_obj)
@@ -2490,7 +2490,7 @@ void perform_act(const char *orig,
 					dg_victim = (CharData *) vict_obj;
 					break;
 
-				case 'g': i = IS_IMMORTAL(ch) || (arena) ? GET_CH_SUF_1(ch) : GET_CH_VIS_SUF_1(ch, to);
+				case 'g': i = ch->IsImmortal() || (arena) ? GET_CH_SUF_1(ch) : GET_CH_VIS_SUF_1(ch, to);
 					break;
 				case 'G':
 					if (vict_obj)
@@ -2500,7 +2500,7 @@ void perform_act(const char *orig,
 					dg_victim = (CharData *) vict_obj;
 					break;
 
-				case 'y': i = IS_IMMORTAL(ch) || (arena) ? GET_CH_SUF_5(ch) : GET_CH_VIS_SUF_5(ch, to);
+				case 'y': i = ch->IsImmortal() || (arena) ? GET_CH_SUF_5(ch) : GET_CH_VIS_SUF_5(ch, to);
 					break;
 				case 'Y':
 					if (vict_obj)
@@ -2510,7 +2510,7 @@ void perform_act(const char *orig,
 					dg_victim = (CharData *) vict_obj;
 					break;
 
-				case 'u': i = IS_IMMORTAL(ch) || (arena) ? GET_CH_SUF_2(ch) : GET_CH_VIS_SUF_2(ch, to);
+				case 'u': i = ch->IsImmortal() || (arena) ? GET_CH_SUF_2(ch) : GET_CH_VIS_SUF_2(ch, to);
 					break;
 				case 'U':
 					if (vict_obj)
@@ -2520,7 +2520,7 @@ void perform_act(const char *orig,
 					dg_victim = (CharData *) vict_obj;
 					break;
 
-				case 'w': i = IS_IMMORTAL(ch) || (arena) ? GET_CH_SUF_3(ch) : GET_CH_VIS_SUF_3(ch, to);
+				case 'w': i = ch->IsImmortal() || (arena) ? GET_CH_SUF_3(ch) : GET_CH_VIS_SUF_3(ch, to);
 					break;
 				case 'W':
 					if (vict_obj)
@@ -2530,7 +2530,7 @@ void perform_act(const char *orig,
 					dg_victim = (CharData *) vict_obj;
 					break;
 
-				case 'q': i = IS_IMMORTAL(ch) || (arena) ? GET_CH_SUF_4(ch) : GET_CH_VIS_SUF_4(ch, to);
+				case 'q': i = ch->IsImmortal() || (arena) ? GET_CH_SUF_4(ch) : GET_CH_VIS_SUF_4(ch, to);
 					break;
 				case 'Q':
 					if (vict_obj)
@@ -2540,7 +2540,7 @@ void perform_act(const char *orig,
 					dg_victim = (CharData *) vict_obj;
 					break;
 //суффикс глуп(ым,ой,ыми)
-				case 'r': i = IS_IMMORTAL(ch) || (arena) ? GET_CH_SUF_7(ch) : GET_CH_VIS_SUF_7(ch, to);
+				case 'r': i = ch->IsImmortal() || (arena) ? GET_CH_SUF_7(ch) : GET_CH_VIS_SUF_7(ch, to);
 					break;
 				case 'R':
 					if (vict_obj)
@@ -2550,7 +2550,7 @@ void perform_act(const char *orig,
 					dg_victim = (CharData *) vict_obj;
 					break;
 //суффикс как(ое,ой,ая,ие)
-				case 'x': i = IS_IMMORTAL(ch) || (arena) ? GET_CH_SUF_8(ch) : GET_CH_VIS_SUF_8(ch, to);
+				case 'x': i = ch->IsImmortal() || (arena) ? GET_CH_SUF_8(ch) : GET_CH_VIS_SUF_8(ch, to);
 					break;
 				case 'X':
 					if (vict_obj)
@@ -2757,7 +2757,7 @@ void act(const char *str,
 		}
 	}
 	//Реализация флага слышно арену
-	if ((to_arena) && (ch) && !IS_IMMORTAL(ch) && (ch->in_room != kNowhere) && ROOM_FLAGGED(ch->in_room, ERoomFlag::kArena)
+	if ((to_arena) && (ch) && !ch->IsImmortal() && (ch->in_room != kNowhere) && ROOM_FLAGGED(ch->in_room, ERoomFlag::kArena)
 		&& ROOM_FLAGGED(ch->in_room, ERoomFlag::kArenaSend) && !ROOM_FLAGGED(ch->in_room, ERoomFlag::kTribune)) {
 		arena_room_rnum = ch->in_room;
 		// находим первую клетку в зоне
