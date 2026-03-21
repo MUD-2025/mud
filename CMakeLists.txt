@@ -169,6 +169,7 @@ set(SOURCES
 		src/gameplay/mechanics/weather.cpp
 		src/engine/olc/zedit.cpp
 		src/utils/utils_string.cpp
+		src/utils/mud_string.cpp
 		src/engine/db/world_objects.cpp
 		src/engine/db/obj_prototypes.cpp
 		src/engine/db/world_checksum.cpp
@@ -232,6 +233,8 @@ set(SOURCES
 		src/engine/ui/cmd/do_order.cpp
 		src/engine/ui/cmd/do_mercenary.cpp
 		src/gameplay/affects/affect_data.cpp
+		src/gameplay/affects/mobile_affect_update_profiler.cpp
+		src/gameplay/affects/player_affect_update_profiler.cpp
 		src/gameplay/skills/track.cpp
 		src/engine/ui/cmd/do_flee.cpp
 		src/engine/ui/cmd/do_hire.cpp
@@ -434,6 +437,7 @@ set(SOURCES
 		src/engine/ui/cmd_god/do_restore.cpp
 		src/engine/ui/cmd_god/do_gecho.cpp
 		src/engine/ui/cmd_god/do_poof_msg.cpp
+		src/engine/ui/cmd_god/do_profile.cpp
 		src/engine/ui/cmd_god/do_wizlock.cpp
 		src/engine/ui/cmd_god/do_date.cpp
 		src/engine/ui/cmd_god/do_last.cpp
@@ -482,6 +486,7 @@ set(HEADERS
 		src/engine/ui/cmd_god/do_godtest.h
 		src/engine/ui/cmd/do_telegram.h
 		src/engine/ui/cmd/do_hire.h
+		src/engine/ui/cmd_god/do_profile.h
 		src/engine/ui/cmd/do_mixture.h
 		src/engine/ui/cmd/do_cast.h
 		src/engine/ui/cmd/do_employ.h
@@ -534,7 +539,10 @@ set(HEADERS
 		src/engine/db/world_objects.h
 		src/engine/db/world_checksum.h
 		src/utils/utils_string.h
+		src/utils/mud_string.h
 		src/gameplay/affects/affect_handler.h
+		src/gameplay/affects/mobile_affect_update_profiler.h
+		src/gameplay/affects/player_affect_update_profiler.h
 		src/gameplay/economics/auction.h
 		src/utils/backtrace.h
 		src/administration/ban.h

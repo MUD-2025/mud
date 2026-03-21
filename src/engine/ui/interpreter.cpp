@@ -57,6 +57,7 @@
 #include "engine/ui/cmd_god/do_beep.h"
 #include "engine/ui/cmd_god/do_overstuff.h"
 #include "engine/ui/cmd_god/do_poof_msg.h"
+#include "engine/ui/cmd_god/do_profile.h"
 #include "engine/ui/cmd_god/do_print_armor.h"
 #include "engine/ui/cmd_god/do_purge.h"
 #include "engine/ui/cmd_god/do_godtest.h"
@@ -923,6 +924,7 @@ cpp_extern const struct command_info cmd_info[] =
 		{"pour", EPosition::kStand, do_pour, 0, kScmdPour, -1},
 		{"practice", EPosition::kStand, do_not_here, 0, 0, -1},
 		{"prompt", EPosition::kDead, do_display, 0, 0, 0},
+		{"profile", EPosition::kDead, do_profile, kLvlImmortal, 0, 0},
 		{"proxy", EPosition::kDead, do_proxy, kLvlGreatGod, 0, 0},
 		{"purge", EPosition::kDead, DoPurge, kLvlGod, 0, 0},
 		{"put", EPosition::kRest, do_put, 0, 0, 500},
@@ -1070,26 +1072,7 @@ cpp_extern const struct command_info cmd_info[] =
 		{"\n", EPosition::kDead, nullptr, 0, 0, 0}
 	};
 
-const char *dir_fill[] = {"in",
-						  "from",
-						  "with",
-						  "the",
-						  "on",
-						  "at",
-						  "to",
-						  "\n"
-};
-
-const char *reserved[] = {"a",
-						  "an",
-						  "self",
-						  "me",
-						  "all",
-						  "room",
-						  "someone",
-						  "something",
-						  "\n"
-};
+// dir_fill, reserved moved to mud_string.cpp
 
 void check_hiding_cmd(CharData *ch, int percent) {
 	int remove_hide = false;
@@ -1349,138 +1332,9 @@ int search_block(const std::string &block, const char **list, int exact) {
 	return (-1);
 }
 
-int is_number(const char *str) {
-	while (*str) {
-		if (!a_isdigit(*(str++))) {
-			return 0;
-		}
-	}
+// is_number and delete_doubledollar moved to utils_string.cpp
 
-	return 1;
-}
-
-/*
- * Given a string, change all instances of double dollar signs ($$) to
- * single dollar signs ($).  When strings come in, all $'s are changed
- * to $$'s to avoid having users be able to crash the system if the
- * inputted string is eventually sent to act().  If you are using user
- * input to produce screen output AND YOU ARE SURE IT WILL NOT BE SENT
- * THROUGH THE act() FUNCTION (i.e., do_gecho, but NOT do_say),
- * you can call delete_doubledollar() to make the output look correct.
- *
- * Modifies the string in-place.
- */
-char *delete_doubledollar(char *string) {
-	char *read, *write;
-
-	// If the string has no dollar signs, return immediately //
-	if ((write = strchr(string, '$')) == nullptr)
-		return (string);
-
-	// Start from the location of the first dollar sign //
-	read = write;
-
-	while (*read)        // Until we reach the end of the string... //
-		if ((*(write++) = *(read++)) == '$')    // copy one char //
-			if (*read == '$')
-				read++;    // skip if we saw 2 $'s in a row //
-
-	*write = '\0';
-
-	return (string);
-}
-
-int fill_word(const char *argument) {
-	return (search_block(argument, dir_fill, true) >= 0);
-}
-
-int reserved_word(const char *argument) {
-	return (search_block(argument, reserved, true) >= 0);
-}
-
-template<typename T>
-T one_argument_template(T argument, char *first_arg) {
-	char *begin = first_arg;
-
-	if (!argument) {
-		log("SYSERR: one_argument received a NULL pointer!");
-		*first_arg = '\0';
-		return (nullptr);
-	}
-	do {
-		skip_spaces(&argument);
-		first_arg = begin;
-		while (*argument && !a_isspace(*argument)) {
-			*(first_arg++) = a_lcc(*argument);
-			argument++;
-		}
-		*first_arg = '\0';
-	} while (fill_word(begin));
-	skip_spaces(&argument);
-	return (argument);
-}
-
-template<typename T>
-T any_one_arg_template(T argument, char *first_arg) {
-	if (!argument) {
-		log("SYSERR: any_one_arg() passed a NULL pointer.");
-		return 0;
-	}
-	skip_spaces(&argument);
-
-	int num = 0;
-//	int len = strlen(argument);
-	while (*argument && !a_isspace(*argument) && num < kMaxStringLength - 1) {
-		*first_arg = a_lcc(*argument);
-		++first_arg;
-		++argument;
-		++num;
-	}
-	*first_arg = '\0';
-	skip_spaces(&argument);
-	return argument;
-}
-
-char *one_argument(char *argument, char *first_arg) { return one_argument_template(argument, first_arg); }
-const char *one_argument(const char *argument, char *first_arg) { return one_argument_template(argument, first_arg); }
-char *any_one_arg(char *argument, char *first_arg) { return any_one_arg_template(argument, first_arg); }
-const char *any_one_arg(const char *argument, char *first_arg) { return any_one_arg_template(argument, first_arg); }
-
-void SplitArgument(const char *arguments, std::vector<std::string> &out) {
-	char local_buf[kMaxTrglineLength];
-	const char *current_arg = arguments;
-	out.clear();
-	do {
-		current_arg = one_argument(current_arg, local_buf);
-		if (!*local_buf) {
-			break;
-		}
-		out.emplace_back(local_buf);
-	} while (*current_arg);
-}
-
-void SplitArgument(const char *arguments, std::vector<short> &out) {
-	std::vector<std::string> tmp;
-	SplitArgument(arguments, tmp);
-	for (const auto &value : tmp) {
-		out.push_back(atoi(value.c_str()));
-	}
-}
-
-void SplitArgument(const char *arguments, std::vector<int> &out) {
-	std::vector<std::string> tmp;
-	SplitArgument(arguments, tmp);
-	for (const auto &value : tmp) {
-		out.push_back(atoi(value.c_str()));
-	}
-}
-
-// return first space-delimited token in arg1; remainder of string in arg2 //
-void half_chop(const char *string, char *arg1, char *arg2) {
-	const char *temp = any_one_arg_template(string, arg1);
-	skip_spaces(&temp);
-	strl_cpy(arg2, temp, kMaxStringLength);
-}
+// fill_word, reserved_word, one_argument, any_one_arg, SplitArgument, half_chop moved to mud_string.cpp
 
 // Used in specprocs, mostly.  (Exactly) matches "command" to cmd number //
 int find_command(const char *command) {
