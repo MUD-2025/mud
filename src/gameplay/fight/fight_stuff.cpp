@@ -365,7 +365,7 @@ void arena_kill(CharData *ch, CharData *killer) {
 			PlaceCharToRoom(f, to_room);
 		}
 	}
-	for (int i=0; i < MAX_FIRSTAID_REMOVE; i++) {
+	for (int i=0; i < kMaxFirstaidRemove; i++) {
 		RemoveAffectFromChar(ch, GetRemovableSpellId(i));
 	}
 	// наемовские яды
@@ -556,7 +556,7 @@ void raw_kill(CharData *ch, CharData *killer) {
 		if (hitter.deleted)
 			continue;
 		if (hitter.ch->GetEnemy() == ch) {
-			SetWaitState(hitter.ch, 0);
+			hitter.ch->zero_wait();
 		}
 	}
 	if (!ch || ch->purged()) {
