@@ -430,7 +430,7 @@ char *rustime(const struct tm *timeptr) {
 	return result;
 }
 
-int roundup(float fl) {
+int round_up(float fl) {
 	if ((int) fl < fl)
 		return (int) fl + 1;
 	else
