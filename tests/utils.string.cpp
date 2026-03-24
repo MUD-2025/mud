@@ -420,11 +420,28 @@ TEST(Utils_String, ExtractFirstArgument_ExtractsWord)
 	EXPECT_EQ("world", remains);
 }
 
-TEST(Utils_String, ExtractFirstArgument_NoSpace_ReturnsEmpty)
+TEST(Utils_String, ExtractFirstArgument_NoSpace_ReturnsWholeString)
 {
 	std::string remains;
 	std::string word = utils::ExtractFirstArgument("hello", remains);
+	EXPECT_EQ("hello", word);
+	EXPECT_TRUE(remains.empty());
+}
+
+TEST(Utils_String, ExtractFirstArgument_LeadingSpaces)
+{
+	std::string remains;
+	std::string word = utils::ExtractFirstArgument("  hello world", remains);
+	EXPECT_EQ("hello", word);
+	EXPECT_EQ("world", remains);
+}
+
+TEST(Utils_String, ExtractFirstArgument_OnlySpaces)
+{
+	std::string remains;
+	std::string word = utils::ExtractFirstArgument("   ", remains);
 	EXPECT_TRUE(word.empty());
+	EXPECT_TRUE(remains.empty());
 }
 
 TEST(Utils_String, ExtractFirstArgument_MultipleWords)
@@ -433,6 +450,14 @@ TEST(Utils_String, ExtractFirstArgument_MultipleWords)
 	std::string word = utils::ExtractFirstArgument("one two three", remains);
 	EXPECT_EQ("one", word);
 	EXPECT_EQ("two three", remains);
+}
+
+TEST(Utils_String, ExtractFirstArgument_Aliasing)
+{
+	std::string s = "one two three";
+	std::string word = utils::ExtractFirstArgument(s, s);
+	EXPECT_EQ("one", word);
+	EXPECT_EQ("two three", s);
 }
 
 // ===== FirstWordOnString =====
