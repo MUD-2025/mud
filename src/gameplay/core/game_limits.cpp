@@ -1381,6 +1381,9 @@ void obj_point_update() {
 	utils::CExecutionTimer timer;
 
 	for (auto &obj : obj_update_list) {
+		if (obj->get_script()->is_purged()) {
+			continue;
+		}
 		if (obj->get_where_obj() == EWhereObj::kSeller) {
 			continue;
 		}
@@ -1462,7 +1465,7 @@ void obj_point_update() {
 		} else {
 			if (j->get_timer() == 0 && CheckSript(j, OTRIG_TIMER)) {
 					timer_otrigger(j);
-					return;
+					continue;
 			}
 			// *** рассыпание объекта
 			ObjData *jj, *next_thing2;
