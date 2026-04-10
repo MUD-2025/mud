@@ -638,9 +638,15 @@ void Heartbeat::pulse(const int missed_pulses, pulse_label_t &label) {
 
 	label.clear();
 	advance_pulse_numbers();
-	//log("Heartbeat pulse"); // by prool
-	character_list.PurgeExtractedList();
-	world_objects.PurgeExtractedList();
+	log("Heartbeat pulse");
+	{
+		auto span = tracing::TraceManager::Instance().StartSpan("Characters::PurgeExtractedList");
+		character_list.PurgeExtractedList();
+	}
+	{
+		auto span = tracing::TraceManager::Instance().StartSpan("WorldObjects::PurgeExtractedList");
+		world_objects.PurgeExtractedList();
+	}
 	for (std::size_t i = 0; i != m_steps.size(); ++i) {
 		auto &step = m_steps[i];
 		auto get_mem = TotalMemUse();
@@ -660,7 +666,7 @@ void Heartbeat::pulse(const int missed_pulses, pulse_label_t &label) {
 			step.action()->perform(pulse_number(), missed_pulses);
 			const auto execution_time = timer.delta().count();
 			if (step.modulo() >= kSecsPerMudHour * kPassesPerSec) {
-				//log("Heartbeat step: %s", step.name().c_str()); // prool
+				log("Heartbeat step: %s", step.name().c_str());
 			}
 			if (pmem_used != last_pmem_used) {
 //				char buf [128];
