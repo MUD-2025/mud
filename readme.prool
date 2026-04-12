@@ -1,10 +1,22 @@
-prools branch is prool
+Prool's branch is "prool"
 
-MUD server working
+MUD server working:
 host virtustan.net
 port 4000
+
+-----------------------
+
+For compiling in Debian 11 need in file src/utils/logger.cpp add line
+
+#define HAS_TIME_ZONE 0
+
+before line 
+
+std::list<FILE *> opened_files;
+
+-----------------------
 
 Prool
 
 proolix@gmail.com
-www.virtustan.net
+http://virtustan.net
