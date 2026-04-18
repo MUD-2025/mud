@@ -2190,7 +2190,7 @@ void paste_mob(CharData *ch, RoomRnum room) {
 
 			if (GET_LASTROOM(ch) == kNowhere)
 			{
-				ExtractCharFromWorld(ch, false, true);
+				character_list.AddToExtractedList(ch);
 				return;
 			}
 
