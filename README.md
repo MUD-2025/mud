@@ -1,4 +1,6 @@
-From Prool: my remarks in file readme.prool
+From Prool: my remarks in file readme.prool.
+This repo is stopped in May 2026.
+Next development in new repo https://github.com/prool-debug/mud
 
 ----
 # BRus MUD Engine readme.
