@@ -2,7 +2,14 @@ Prool's branch is "prool"
 
 MUD server working:
 host virtustan.net
-port 4000
+port 3000 (Virtustan MUD)
+port 4000 (Zerkalo MUD)
+
+-----------------------
+15 May 2026. This repo is stopped. Next development in https://github.com/prool-debug/mud
+
+30 May 2026. I revert to this repo. Я на деякий час повернувся до цього відносно стабільного репозиторія,
+бо останні версії билинного апстріма якісь глючні.
 
 -----------------------
 
