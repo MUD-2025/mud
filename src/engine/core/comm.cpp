@@ -186,8 +186,12 @@ extern const char* revision;
 */
 
 // prool
+#define MSSP			70
+#define MSSP_VAR		1
+#define MSSP_VAL		2
 char *ptime(void);
 void prool_make_www (int players);
+const char mssp_will[] = {(char) IAC, (char) WILL, (char) MSSP, '\0'};
 
 int count_mxp_tags(const int bMXP, const char *txt, int length) {
 	char c;
@@ -711,7 +715,7 @@ int main_function(int argc, char **argv) {
 	 * in the log if stderr is redirected to a file.
 	 */
 	//printf("[%s] %s\r\n", utils::NowTs().c_str(), circlemud_version);
-	printf("Byliny, modif. by prool, CHIMERA version\r\n");
+	printf("Byliny, modif. by prool, CHIMERA version\r\nhttps://github.com/MUD-2025/mud\r\n");
 	printf("[%s] %s\r\n", utils::NowTs().c_str(), DG_SCRIPT_VERSION);
 	if (getcwd(cwd, sizeof(cwd))) {};
 	printf("[%s] Current directory '%s' using '%s' as data directory.\r\n", utils::NowTs().c_str(), cwd, dir);
@@ -1891,6 +1895,9 @@ int new_descriptor(socket_t s)
 
 	// trying to turn on MSDP
 	iosystem::write_to_descriptor(newd->descriptor, will_msdp, sizeof(will_msdp));
+	
+	// prool: MSSP
+	iosystem::write_to_descriptor(newd->descriptor, mssp_will, sizeof(mssp_will));
 
 #if defined(HAVE_ZLIB)
 	iosystem::write_to_descriptor(newd->descriptor, iosystem::compress_will, sizeof(iosystem::compress_will));

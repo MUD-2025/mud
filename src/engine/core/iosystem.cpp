@@ -26,6 +26,14 @@
 
 #include <third_party_libs/fmt/include/fmt/format.h>
 
+// prool
+#define MSSP			70
+#define MSSP_VAR		1
+#define MSSP_VAL		2
+void mssp_start(DescriptorData * t);
+char *ptime(void);
+char *hostname (const char *ip);
+extern long prool_boot_time;
 
 namespace iosystem {
 
@@ -246,6 +254,13 @@ int process_input(DescriptorData *t) {
 
 						t->msdp_support(true);
 						break;
+                             		case (char) MSSP: // prool: MSSP
+                                        {
+                                        mssp_start(t);
+                                        //printf("VMUD %s MSSP start %s. Online %i\n", ptime(), t->host, total_players);
+                                        printf("%s MSSP start %s [%s]\n", ptime(), t->host, hostname(t->host));
+					break;
+					}
 
 					default: continue;
 				}
@@ -1253,5 +1268,115 @@ char *show_state(CharData *ch, CharData *victim) {
 }
 
 } // namespace iosystem
+
+// prool code:
+
+void mssp_start(DescriptorData * t)
+{char buf[1024];
+
+int total_players=0;
+
+#if 0
+const char mssp_str[] = {IAC,SB,MSSP,
+	MSSP_VAR,'P','L','A','Y','E','R','S',MSSP_VAL,'0',
+	MSSP_VAR,'N','A','M','E',MSSP_VAL,'V','i','r','t','u','s','t','a','n',' ','M','U','D',
+	IAC,SE,'\0'};
+#endif
+
+sprintf(buf,
+"%c%c%c%cPLAYERS%c%i%cNAME%cVirtustan MUD%cUPTIME%c%li%cCRAWL DELAY%c-1\
+%cHOSTNAME%cvirtustan.net\
+%cPORT%c3000\
+%cPORT%c3001\
+%cCODEBASE%cCircleMUD\
+%cCONTACT%cproolix@gmail.com\
+%cCREATED%c2007\
+%cIP%c95.217.157.136\
+%cLANGUAGE%crussian\
+%cLOCATION%cEurope\
+%cMINIMUM AGE%c0\
+%cWEBSITE%chttp://virtustan.net\
+%cFAMILY%cDikuMUD\
+%cAREAS%c%i\
+%cMOBILES%c%i\
+%cOBJECTS%c%i\
+%cROOMS%c%i\
+%cCLASSES%c15\
+%cRACES%c6\
+%cANSI%c1\
+%cMCCP%c1\
+%cMCP%c0\
+%cMSP%c0\
+%cMXP%c0\
+%cPUEBLO%c0\
+%cGMCP%c0\
+%cMSDP%c0\
+%cHIRING BUILDERS%c1\
+%cHIRING CODERS%c1\
+%cPLAYER CLANS%c1\
+%cWORLD ORIGINALITY%c1\
+%cGENRE%cFantasy\
+%cGAMESYSTEM%cCustom\
+%cLEVELS%c30\
+%cVT100%c0\
+%cPAY TO PLAY%c0\
+%cPAY FOR PERKS%c0\
+%cINTERMUD%c0\
+%cXTERM 256 COLORS%c0\
+%cXTERM TRUE COLORS%c0\
+%cUTF-8%c1\
+%cCHARSET%cUTF-8%ckoi8-ru%ccp1251\
+%cREFERRAL%ctbamud.com:4000%ctbamud.com:9091\
+%c%c",
+IAC,SB,MSSP,MSSP_VAR,MSSP_VAL,total_players,MSSP_VAR,MSSP_VAL,MSSP_VAR,MSSP_VAL,(long int)prool_boot_time,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,0 /*top_of_zone_table + 1 */ /*statistic_zones*/,
+MSSP_VAR,MSSP_VAL,0 /*top_of_mobt + 1*/ /*statistic_mobs*/,
+MSSP_VAR,MSSP_VAL,0 /*top_of_objt + 1*/ /*statistic_objs*/,
+MSSP_VAR,MSSP_VAL,0 /*top_of_world + 1*/ /*statistic_rooms*/,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR,MSSP_VAL,
+MSSP_VAR, MSSP_VAL, MSSP_VAL, MSSP_VAL,
+MSSP_VAR, MSSP_VAL, MSSP_VAL,
+IAC,SE);
+
+// printf("MSSP total_players %i\n",total_players);
+
+iosystem::write_to_descriptor(t->descriptor, buf, strlen(buf));
+}
 
 // vim: ts=4 sw=4 tw=0 noet syntax=cpp :
