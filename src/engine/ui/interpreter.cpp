@@ -1703,6 +1703,9 @@ int check_dupes_host(DescriptorData *d, bool autocheck = false) {
 }
 
 int check_dupes_email(DescriptorData *d) {
+
+	return (1); // prool: multing enabled!
+
 	if (!d->character
 		|| d->character->IsImmortal()) {
 		return (1);

@@ -1,8 +1,10 @@
 // prool code for MUD
 // proolix@gmail.com
-// http://mud.virtustan.net
+// http://virtustan.net
 // Virtustan, Europe, 2026
 // (c) GPL v.3
+
+#if 0
 
 char *koi_to_lat(char *str_i, char *str_o) // by prool, v.2
 {
@@ -88,6 +90,7 @@ while (*str_i)
 *str_o=0;
 return p;
 }
+#endif
 
 char *ptime(void) // by prool. Возвращаемое значение: ссылка на текстовую строку с текущим временем
 	{
@@ -102,6 +105,7 @@ char *ptime(void) // by prool. Возвращаемое значение: ссы
 	return tmstr;
 
 	}
+
 
 void prool_make_www (int players)
 {
