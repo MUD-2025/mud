@@ -2340,15 +2340,15 @@ static void ShowEncodingPrompt(DescriptorData *d, bool withHints = false) {
 			"\r\n"
 			"Using keytable           TECT. CTPOKA\r\n"
 			"  0) Koi-8               " ENC_HINT_KOI8R "\r\n"
-			"  1) Alt                 " ENC_HINT_ALT "\r\n"
-			"  2) Windows(JMC,MMC)    " ENC_HINT_WIN "\r\n"
-			"  3) Windows(zMUD)       " ENC_HINT_WIN_ZMUD "\r\n"
-			"  4) Windows(zMUD 'z')   " ENC_HINT_WIN_ZMUD_z "\r\n"
-			"  5) UTF-8               " ENC_HINT_UTF8 "\r\n"
-			"  6) Windows(zMUD <6.39) " ENC_HINT_WIN_ZMUD_old "\r\n"
-   //			"Select one : ", d);
-			"\r\n"
-			"KAKOE HAnuCAHuE ECTb BEPHOE, PA3yMEEMOE HA PyCCKOM? BBEguTE HOMEP : ",
+													   "  1) Alt                 " ENC_HINT_ALT "\r\n"
+																								"  2) Windows(JMC,MMC)    " ENC_HINT_WIN "\r\n"
+																																		 "  3) Windows(zMUD)       " ENC_HINT_WIN_ZMUD "\r\n"
+																																													   "  4) Windows(zMUD 'z')   " ENC_HINT_WIN_ZMUD_z "\r\n"
+																																																									   "  5) UTF-8               " ENC_HINT_UTF8 "\r\n"
+																																																																				 "  6) Windows(zMUD <6.39) " ENC_HINT_WIN_ZMUD_old "\r\n"
+																																																																																   //			"Select one : ", d);
+																																																																																   "\r\n"
+																																																																																   "KAKOE HAnuCAHuE ECTb BEPHOE, PA3yMEEMOE HA PyCCKOM? BBEguTE HOMEP : ",
 			d);
 	} else {
 		iosystem::write_to_output(
@@ -2396,23 +2396,8 @@ void nanny(DescriptorData *d, char *argument) {
 	switch (d->state) {
 		case EConState::kInit:
 			// just connected
+		iosystem::write_to_output("Virtustan MUD\r\n\r\n", d);
 		{
-		// prool
-#define PROOLSIZE 512
-		FILE *fp;
-		char proolbuf[PROOLSIZE];
-		fp=fopen("file0.txt","r");
-		if (fp) {
-			while (!feof(fp)) {
-			proolbuf[0]=0;
-			fgets(proolbuf, PROOLSIZE, fp);
-			if (proolbuf[0]==0) break;
-			iosystem::write_to_output(proolbuf, d);
-			}
-		}
-		else
-		iosystem::write_to_output("\r\n---\r\n", d);
-		// end prool
 			int online_players = 0;
 			for (auto i = descriptor_list; i; i = i->next) {
 				online_players++;
