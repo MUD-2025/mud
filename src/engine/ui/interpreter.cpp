@@ -2384,12 +2384,24 @@ void DisplaySelectCharClassMenu(DescriptorData *d) {
 	iosystem::write_to_output(out.str().c_str(), d);
 }
 
+#define PROOL_LEN 512
+
+char *strtime(time_t time) // prool: function from source of Crusify MUD
+{
+	char *p = ctime(&time);
+	p[24] = '\0';
+	return p;
+}
+
 // deal with newcomers and other non-playing sockets
 void nanny(DescriptorData *d, char *argument) {
 	char buffer[kMaxStringLength];
 	int player_i = 0, load_result;
 	char tmp_name[kMaxInputLength], pwd_name[kMaxInputLength], pwd_pwd[kMaxInputLength];
 	bool is_player_deleted;
+	char prool_buf[PROOL_LEN];
+	time_t		    current_time;	/* time */
+
 	if (d->state != EConState::kConsole)
 		skip_spaces(&argument);
 
@@ -2397,6 +2409,11 @@ void nanny(DescriptorData *d, char *argument) {
 		case EConState::kInit:
 			// just connected
 		iosystem::write_to_output("Virtustan MUD\r\n\r\n", d);
+
+		time(&current_time);
+		snprintf(prool_buf, PROOL_LEN, "Server time %s your IP %s\r\n\r\n", strtime(current_time), d->host);
+		iosystem::write_to_output(prool_buf, d);
+
 		{
 			int online_players = 0;
 			for (auto i = descriptor_list; i; i = i->next) {
